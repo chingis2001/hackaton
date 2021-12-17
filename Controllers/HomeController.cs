@@ -12,15 +12,18 @@ namespace hackaton.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly hackatonContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, hackatonContext context)
         {
+            _context = context;
             _logger = logger;
         }
 
         public IActionResult Index()
         {
-            return View();
+            List<category> categories = _context.category.ToList();
+            return View(categories);
         }
 
         public IActionResult Privacy()
