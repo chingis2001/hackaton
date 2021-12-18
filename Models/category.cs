@@ -20,6 +20,7 @@ namespace hackaton.Models
         public Guid? id_upper { get; set; }
         public string name { get; set; }
         public int level { get; set; }
+        public string description { get; set; }
         public IEnumerable<order> orders { get; set; }
         public IEnumerable<category> categories { get; set; }
         public category upper { get; set; }

@@ -33,9 +33,50 @@ namespace hackaton.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult Login() 
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(string? username, string? password, bool rememberme) 
         {
-            return PartialView("_Login");
+            string resultname = username + password;
+            var пользователь = _context.user.FirstOrDefault(t => t.username == username);
+            if (пользователь != null)
+            {
+                var salt = Convert.FromBase64String(пользователь._salt);
+                var passwdhash = KeyDerivation.Pbkdf2(
+                    password: password,
+                    salt: salt,
+                    prf: KeyDerivationPrf.HMACSHA1,
+                    iterationCount: 10000,
+                    numBytesRequested: 256 / 8);
+                string stringpasswdhashed = Convert.ToBase64String(passwdhash);
+                if (пользователь.password != stringpasswdhashed)
+                {
+                    ViewBag.Error = "Wrong password!";
+                    return View();
+                }
+                Guid IdUser = пользователь.user_id;
+                string UserName = пользователь.username;
+                await Authenticate(IdUser.ToString(), UserName);
+                if (rememberme)
+                {
+                    var gh = HttpContext.User.Identity.Name;
+                    var hashed = KeyDerivation.Pbkdf2(
+                        password: HttpContext.Connection.RemoteIpAddress + HttpContext.Request.Headers["User-Agent"],
+                        salt: _tokensalt,
+                        prf: KeyDerivationPrf.HMACSHA1,
+                        iterationCount: 10000,
+                        numBytesRequested: 256 / 8);
+                    string stringhashed = Convert.ToBase64String(hashed);
+                    пользователь._token = stringhashed;
+                    _context.user.Update(пользователь);
+                    _context.SaveChanges();
+                }
+            }
+            else 
+            {
+                ViewBag.Error = "Wrong login";
+                return View();
+            }
+            return RedirectToAction("/Home/Index");
         }
         struct INN_resp 
         {
@@ -133,7 +174,7 @@ namespace hackaton.Controllers
             return true;
         }
         [HttpPost]
-        public IActionResult Register(user user, string? INN, bool rememberme, string options) 
+        public IActionResult Register(user user, string? INN, string options) 
         {
             var salt = GetSalt();
             if (options == "ispolnitel") 
@@ -143,10 +184,7 @@ namespace hackaton.Controllers
                 if (!check) 
                 {
                     ModelState.AddModelError("", "ИНН не подходит введите другой");
-                    return Json(new 
-                    {
-
-                    });
+                    return RedirectToAction("/Home/Index");
                 }
             }
             var hashed_password = KeyDerivation.Pbkdf2(
@@ -163,19 +201,31 @@ namespace hackaton.Controllers
             else
                 user.status_id = 1;
             _context.Add(user);
-            user other_user = _context.user.SingleOrDefault(t => t.username == user.username);
             if (!ModelState.IsValid) 
             {
-                return Json(new 
-                {
-
-                });
+                return RedirectToAction("/Home/Index");
             }
+            user other_user = _context.user.SingleOrDefault(t => t.username == user.username);
             if (other_user == null) 
             {
                 _context.SaveChanges();
             }
             return RedirectToAction("Index", "Home");
+        }
+        private async Task Authenticate(string userName, string rolename)
+        {
+            // создаем один claim
+            if (rolename != "admin")
+                rolename = "user";
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimsIdentity.DefaultNameClaimType, userName),
+                new Claim(ClaimsIdentity.DefaultRoleClaimType, rolename)
+            };
+            // создаем объект ClaimsIdentity
+            ClaimsIdentity id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
+            // установка аутентификационных куки
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
         }
         public byte[] GetSalt()
         {

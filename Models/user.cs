@@ -26,7 +26,7 @@ namespace hackaton.Models
         public string password { get; set; }
         public string _salt { get; set; }
         public string _token { get; set; }
-        public float balance { get; set; }
+        public double balance { get; set; }
         public int status_id { get; set; }
         [Required(ErrorMessage = "не должно быть пустым")]
         public string username { get; set; }

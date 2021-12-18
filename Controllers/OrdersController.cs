@@ -21,6 +21,8 @@ namespace hackaton.Controllers
         public IActionResult GetCategories(string? name_cat) 
         {
             var category = _context.category.FirstOrDefault(t => t.name == name_cat);
+            var level_ones = _context.category.Where(t => t.level == 1).Select(t => t.name).ToList();
+            ViewBag.upper = level_ones;
             int level_cat = category.level;
             category upper = category;
             if (level_cat == 2) 
@@ -35,10 +37,12 @@ namespace hackaton.Controllers
                 tmp_cats.AddRange(_context.category.Where(t => t.id_upper == cat.id_category).ToList());
             categories.AddRange(tmp_cats);
             categories.Add(upper);
-            return View(categories.OrderBy(t => t.level));
+            return View(categories);
         }
         public IActionResult GetOrders(string? name_cat) 
         {
+            var level_ones = _context.category.Where(t => t.level == 1).Select(t => t.name).ToList();
+            ViewBag.upper = level_ones;
             var category = _context.category.FirstOrDefault(t => t.name == name_cat);
             int level_cat = category.level;
             if (level_cat == 1) 

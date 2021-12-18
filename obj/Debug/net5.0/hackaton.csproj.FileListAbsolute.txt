@@ -386,3 +386,4 @@ C:\learning\hackaton\obj\Debug\net5.0\hackaton.genruntimeconfig.cache
 C:\learning\hackaton\obj\Debug\net5.0\Razor\Views\Auth\_Login.cshtml.g.cs
 C:\learning\hackaton\obj\Debug\net5.0\Razor\Views\Orders\GetOrders.cshtml.g.cs
 C:\learning\hackaton\obj\Debug\net5.0\Razor\Views\Orders\Index.cshtml.g.cs
+C:\learning\hackaton\obj\Debug\net5.0\Razor\Views\Orders\GetCategories.cshtml.g.cs
