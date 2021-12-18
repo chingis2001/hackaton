@@ -383,3 +383,6 @@ C:\learning\hackaton\obj\Debug\net5.0\hackaton.dll
 C:\learning\hackaton\obj\Debug\net5.0\ref\hackaton.dll
 C:\learning\hackaton\obj\Debug\net5.0\hackaton.pdb
 C:\learning\hackaton\obj\Debug\net5.0\hackaton.genruntimeconfig.cache
+C:\learning\hackaton\obj\Debug\net5.0\Razor\Views\Auth\_Login.cshtml.g.cs
+C:\learning\hackaton\obj\Debug\net5.0\Razor\Views\Orders\GetOrders.cshtml.g.cs
+C:\learning\hackaton\obj\Debug\net5.0\Razor\Views\Orders\Index.cshtml.g.cs

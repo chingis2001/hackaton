@@ -23,6 +23,7 @@ namespace hackaton.Controllers
         public IActionResult Index()
         {
             List<category> categories = _context.category.ToList();
+            ViewBag.upper = categories.Where(t=>t.level==1).Select(t=>t.name);
             return View(categories);
         }
 

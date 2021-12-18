@@ -9,25 +9,137 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <div style="margin-bottom: 0px !important; padding-bottom: 0px; border-bottom: 1px solid #e5e5e5" class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">hackaton</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+                <a class="navbar-brand" style="width:110px; text-decoration: none" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src="~/images/logosm.png" style="width:110px" />
+                    <p style="font-size:9px; margin-bottom:0px">ФРИЛАНС МАРКЕТПЛЕЙС</p>
+                </a>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                    <ul class="navbar-nav flex-grow-1 d-flex align-items-center">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <div class="input-group">
+                                <input style="font-size:12px" type="text" class="form-control" placeholder="Найти услуги" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                <div class="input-group-append">
+                                    <button style="font-size:12px; color: #ffffff" class="form-control btn btn-outline-success btn-success" type="button">Найти</button>
+                                </div>
+                            </div>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        <li style="padding-left:10px" class="nav-item">
+                            <div>
+                                <p style="font-size: 10px; margin-bottom: 0px">Пользователей онлайн</p>
+                                <p style="font-size: 10px; margin-bottom: 0px">Последний заказ 49 сек. назад</p>
+                            </div>
                         </li>
                     </ul>
                 </div>
-            </div>
-        </nav>
+                <div class="navbar-collapse collapse d-sm-none justify-content-end">
+                    <ul class="navbar-nav flex-grow-0 d-flex align-items-center">
+                        <li style="margin-right:10px" class="nav-item">
+                            <p style="margin-bottom:0">
+                                <a data-toggle="modal" data-target="#exampleModal" href="#" style="color:#000000">
+                                    Вход
+                                </a>
+                            </p>
+                            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Вход</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form method="post" class="form-group">
+                                                <input style="margin-bottom:0.6rem" id="username" class="form-control" type="text" name="username" placeholder="логин" />
+                                                <input style="margin-bottom:0.6rem" id="password" class="form-control" type="password" name="password" placeholder="пароль" />
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="flexCheckChecked" value="rememberme">
+                                                    <label class="form-check-label" for="flexCheckChecked">
+                                                        Запомнить меня
+                                                    </label>
+                                                </div>
+                                                <p>
+                                                    <a asp-controller="" asp-action="">Забыли пароль?</a>
+                                                </p>
+                                                <button class="btn btn-success" type="submit">Войти</button>
+                                            </form>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li style="margin-right:10px" class="nav-item">
+                            <button data-toggle="modal" data-target="#registerModal" class="btn btn-success">
+                                Регистрация
+                            </button>
+                            <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Вход</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form method="post" class="form-group" asp-controller="Auth" asp-action="Register">
+                                                <div class="btn-group btn-group-toggle w-100" style="margin-bottom:0.4rem" data-toggle="buttons">
+                                                    <label class="btn btn-secondary active">
+                                                        <input value="zakazchik" type="radio" name="options" onchange="document.getElementById('INN').classList.toggle('d-none')" id="option1" autocomplete="off" checked> Заказчик
+                                                    </label>
+                                                    <label class="btn btn-secondary">
+                                                        <input value="ispolnitel" type="radio" name="options" id="option2" onchange="
+                                                            document.getElementById('INN').classList.toggle('d-none');
+                                                        " autocomplete="off"> Исполнитель
+                                                    </label>
+                                                </div>
+                                                <input type="text" style="margin-bottom:0.6rem;" id="INN" class="form-control d-none" name="INN" placeholder="ИНН" />
+                                                <input style="margin-bottom:0.6rem" id="email" class="form-control" type="text" name="email" placeholder="email" />
+                                                <input style="margin-bottom:0.6rem" id="firstname" class="form-control" type="text" name="firstname" placeholder="Имя" />
+                                                <input style="margin-bottom:0.6rem" id="secondname" class="form-control" type="text" name="secondname" placeholder="Фамилия" />
+                                                <input style="margin-bottom:0.6rem" id="username" class="form-control" type="text" name="username" placeholder="никнеймм" />
+                                                <input style="margin-bottom:0.6rem" id="password" class="form-control" type="password" name="password" placeholder="пароль" />
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="flexCheckChecked" value="rememberme">
+                                                    <label class="form-check-label" for="flexCheckChecked">
+                                                        Запомнить меня
+                                                    </label>
+                                                </div>
+                                                <button class="btn btn-success" type="submit">Зарегестрироваться</button>
+                                            </form>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <p style="margin-bottom:0">
+                                <a href="#" style="color:#000000">
+                                    Фрилансеру
+                                </a>
+                            </p>
+                        </li>
+                    </ul>
+                </div>
+            </div>  
+        </div>
+        <div style="border-bottom: 1px solid #e5e5e5" class="w-100 d-flex align-items-center justify-content-center">
+            @foreach (var item in ViewBag.upper)
+            {
+                <p style="margin-bottom:0.4rem; margin-top:0.4rem; margin-right: 0.4rem">
+                    <a asp-controller="Orders" asp-action="GetOrders" asp-route-name_cat="@item" style="color:black">@item</a>
+                    <span style="color: #e5e5e5; font-size:15px!important">|</span>
+                </p>
+            }
+        </div>
     </header>
     <div class="container">
         <main role="main" class="pb-3">

@@ -24,6 +24,8 @@ namespace hackaton.Models
         public float cost { get; set; }
         public Guid user_id { get; set; }
         public int id_status { get; set; }
+        public int due_date { get; set; }
+        public int due_date_term { get; set; }
         public Guid id_category { get; set; }
         public IEnumerable<challenger> challengers { get; set; }
         public category category { get; set; }

@@ -28,6 +28,10 @@ namespace hackaton.Models
         public string _token { get; set; }
         public float balance { get; set; }
         public int status_id { get; set; }
+        [Required(ErrorMessage = "не должно быть пустым")]
+        public string username { get; set; }
+        [Required(ErrorMessage = "не должно быть пустым")]
+        public string email { get; set; }
         public IEnumerable<challenger> challenges { get; set; }
         public IEnumerable<participant> participations { get; set; }
         public IEnumerable<order> orders { get; set; }
