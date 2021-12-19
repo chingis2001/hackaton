@@ -1,0 +1,66 @@
+﻿@using System.Security.Cryptography;
+@using System.Text
+@{
+    ViewBag.Title = "Претенденты";
+    string get_hash(string name)
+    {
+        var tmpsrc = ASCIIEncoding.ASCII.GetBytes(name);
+        var tmphash = new MD5CryptoServiceProvider().ComputeHash(tmpsrc);
+        Int32 int_hash = Math.Abs(BitConverter.ToInt32(tmphash) % 23) + 1;
+        string name_hash = "(" + int_hash.ToString() + ").jpg";
+        return name_hash;
+    }
+}
+@model List<hackaton.Models.user>;
+<div class="row">
+    <div class="col-12">
+        <h3 class="pl-5">Претенденты на выполнение заказа</h3>
+    </div>
+</div>
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-3">
+            <div class="d-flex flex-column m-2" style="border:1px solid black; border-radius:2px;">
+                <img class="pt-2 pl-2 pr-2" style="border-radius:2px" src="/images/lazy/@get_hash(item.username)" width="100%" />
+                <p style="margin-bottom:0px" class="pl-2 pt-2">
+                    Никнейм: @item.username
+                </p>
+                <p style="margin-bottom:0px" class="pl-2 pr-2">email: @item.email</p>
+                <p style="margin-bottom:0px" class="pl-2 pr-2">Имя: @item.firstname</p>
+                <p style="margin-bottom:0px" class="pl-2 pr-2">Фамилия: @item.secondname</p>
+                <button id="@item.user_id" value="@ViewBag.id_order" onclick="acceptSubscription(this)" class="btn btn-success ml-2 mr-2 mb-1">
+                    Принять заявку
+                </button>
+                <button class="btn btn-primary ml-2 mr-2 mb-1">
+                    Написать сообщение
+                </button>
+            </div>
+        </div>
+    }
+</div>
+@section Scripts
+{
+    <script>
+        function acceptSubscription(elem)
+        {
+            let request = new XMLHttpRequest();
+            request.open("POST", "/Orders/AcceptSubscript");
+            request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            let body = "id_user=" + elem.id + "&id_order=" + elem.value;
+            request.onreadystatechange = () => {
+                if (request.readyState == 4 && request.status == 200) {
+                    let response = JSON.parse(request.responseText);
+                    if (response.accepted == "true") {
+                        elem.innerHTML = "Отклонить заявку";
+                    }
+                    else
+                    {
+                        elem.innerHTML = "Принять заявку"
+                    }
+                }
+            }
+            request.send(body);
+        }
+    </script>
+}

@@ -1,0 +1,168 @@
+﻿@using System.Security.Cryptography;
+@using System.Text
+@{
+    ViewBag.Title = "Приглашения";
+    string get_hash(string name)
+    {
+        var tmpsrc = ASCIIEncoding.ASCII.GetBytes(name);
+        var tmphash = new MD5CryptoServiceProvider().ComputeHash(tmpsrc);
+        Int32 int_hash = Math.Abs(BitConverter.ToInt32(tmphash) % 23) + 1;
+        string name_hash = "(" + int_hash.ToString() + ").jpg";
+        return name_hash;
+    }
+}
+@model List<hackaton.Models.challenger>;
+
+<div class="row">
+    <div class="col-12">
+        <h3 class="pl-5">Мои приглашения</h3>
+    </div>
+</div>
+@foreach (var item in Model)
+{
+    <div class="row">
+        <div class="col-12">
+            <div class="row m-2 d-flex align-items-center align-content-center" style="border:1px solid black; border-radius:4px">
+                <div class="col-2">
+                    <img src="~/images/lazy/@get_hash(item.order.name)" width="80px" height="80px" style="border-radius:40px" class="m-1" />
+                </div>
+                <div class="col-8">
+                    <div class="d-flex flex-column">
+                        <p style="margin-bottom:0px">
+                            <a asp-controller="Orders" asp-action="GetOrderInfo" asp-route-id="@item.order.id_order">
+                                @item.order.name
+                            </a>
+                        </p>
+                        @if (item.id_status == 1)
+                        {
+                            <div class="d-flex flex-column">
+                                <p style="margin-bottom:0px">Дней выполнения: @item.order.due_date</p>
+                            </div>
+                        }
+                        @if (item.id_status == 2)
+                        {
+                            <div class="row d-flex align-content-center">
+                                <div class="col-4">
+                                    <input class="form-control" placeholder="Телефон" type="text" name="telephone" />
+                                </div>
+                                <div class="col-4">
+                                    <button value="@item.id_order" class="btn btn-primary" onclick="get_verify(this)">
+                                        Получить код
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                        @if (item.id_status == 4)
+                        {
+                            <div class="d-flex flex-column">
+                                <p style="margin-bottom:0px">Дата начала: @item.order.day_started</p>
+                                <p style="margin-bottom:0px">Дней выполнения: @item.order.due_date</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="col-2">
+                    @if (item.id_status == 2)
+                    {
+                        <div id="@item.id_order" class="d-flex flex-column">
+                            <button onclick="accept(this)" class="btn btn-primary">
+                                Согласиться
+                            </button>
+                            <button onclick="subscribe(this)" class="btn btn-primary mt-1">
+                                Отписаться
+                            </button>
+                        </div>
+                    }
+                    else if (item.id_status == 4)
+                    {
+                        @if (item.order.id_status == 2)
+                        {
+                            <div id="@item.id_order" class="d-flex flex-column">
+                                <button onclick="accept(this)" class="btn btn-primary">
+                                    Отказаться
+                                </button>
+                                <button onclick="subscribe(this)" class="btn btn-primary mt-1">
+                                    Отписаться
+                                </button>
+                            </div>
+                        }
+                    }
+                    else if (item.id_status == 1)
+                    {
+                        <div id="@item.id_order" class="d-flex flex-column">
+                            <button onclick="subscribe(this)" class="btn btn-primary w-100">
+                                Отписаться
+                            </button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@section Scripts
+{
+    <script>
+        function accept(elem)
+        {
+            let bluat = "";
+            if (elem.parentElement.parentElement.previousElementSibling
+                .firstElementChild.lastElementChild.firstElementChild.firstElementChild != undefined)
+                bluat = elem.parentElement.parentElement.previousElementSibling
+                    .firstElementChild.lastElementChild.firstElementChild.firstElementChild.value;
+            let request = new XMLHttpRequest();
+            request.open("POST", "/Orders/AcceptToOrder");
+            request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            let body = "id=" + elem.parentElement.id + "&code=" + bluat;
+            request.onreadystatechange = () => {
+                if (request.readyState == 4 && request.status == 200) {
+                    let response = JSON.parse(request.responseText);
+                    if (response.accepted == "true") {
+                        elem.innerHTML = "Отказаться";
+                    }
+                    else if (response.accepted == "false") {
+                        elem.innerHTML = "Согласиться";
+                    }
+                }
+            }
+            request.send(body);
+        }
+        function get_verify(elem)
+        {
+            let tel = elem.parentElement.previousElementSibling.firstElementChild.value;
+            let request = new XMLHttpRequest();
+            request.open("POST", "/Orders/GetVerifyTel");
+            request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            let body = "tel=" + tel;
+            request.onreadystatechange = () => {
+                if (request.readyState == 4 && request.status == 200) {
+                    let response = JSON.parse(request.responseText);
+                    if (response.status == "200Ok") {
+                        elem.parentElement.previousElementSibling.firstElementChild.value = "";
+                        elem.parentElement.previousElementSibling.firstElementChild.placeholder = "Введите присланный код";
+                        elem.parentElement.removeChild(elem);
+                    }
+                }
+            }
+            request.send(body);
+        }
+        function subscribe(elem) {
+            let request = new XMLHttpRequest();
+            request.open("POST", "/Orders/SubscribeToOrder");
+            request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            let body = "id=" + elem.parentElement.id;
+            request.onreadystatechange = () => {
+                if (request.readyState == 4 && request.status == 200) {
+                    let response = JSON.parse(request.responseText);
+                    if (response.subscribed == "true") {
+                        elem.innerHTML = "Отписаться";
+                    }
+                    else if (response.subscribed == "false") {
+                        elem.innerHTML = "Подписаться";
+                    }
+                }
+            }
+            request.send(body);
+        }
+    </script>
+}

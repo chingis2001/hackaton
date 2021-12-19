@@ -1,0 +1,30 @@
+﻿@using System.Security.Cryptography;
+@using System.Text;
+@{
+    ViewData["Title"] = "Home Page";
+    string get_hash(string name)
+    {
+        var tmpsrc = ASCIIEncoding.ASCII.GetBytes(name);
+        var tmphash = new MD5CryptoServiceProvider().ComputeHash(tmpsrc);
+        Int32 int_hash = Math.Abs(BitConverter.ToInt32(tmphash) % 23) + 1;
+        string name_hash = "(" + int_hash.ToString() + ").jpg";
+        return name_hash;
+    }
+}
+@model List<hackaton.Models.category>;
+<div class="row" style="overflow-x:hidden">
+    <img src="~/images/office.jpg" width="100%" style="overflow-x:hidden; border-radius:10px" />
+</div>
+<div class="row">
+    <div class="col-12">
+        <h3 class="pt-5 pl-5">Выберите рубрику чтобы начать</h3>
+    </div>
+</div>
+<div class="row d-flex align-items-center">
+    <div class="w-100 d-flex align-items-center">
+        @foreach (var item in Model) 
+        {
+            <a asp-controller="Orders" asp-action="GetOrders" asp-route-name_cat="@item.name">@item.name</a>
+        }
+    </div>
+</div>

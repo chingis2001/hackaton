@@ -1,0 +1,39 @@
+﻿@{
+    ViewBag.Title = "Заказы";
+}
+@model List<hackaton.Models.category>
+
+<div class="row">
+    <div class="col-12">
+        <h4>@Model.FirstOrDefault(t=>t.level==1).name</h4>
+        <p>@Model.FirstOrDefault(t=>t.level==1).description</p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-3">
+        @foreach (var item in Model.Where(t => t.level != 1))
+        {
+            if (item.level == 2)
+            {
+                <p style="font-weight:bold">
+                    <a asp-controller="Orders" asp-action="GetOrders" asp-route-name_cat="@item.name">@item.name</a>
+                </p>
+            }
+            else 
+            {
+                <p><a asp-controller="Orders" asp-action="GetOrders" asp-route-name_cat="@item.name">@item.name</a></p>
+            }
+        }
+    </div>
+    <div class="col-9">
+        @foreach (var item in Model.Where(t => t.level == 3)) 
+        {
+            <div class="row">
+                <div class="col-3">
+                    <p><a asp-controller="Orders" asp-action="GetOrders" asp-route-name_cat="@item.name">@item.name</a></p>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+

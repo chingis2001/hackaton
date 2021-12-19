@@ -1,0 +1,77 @@
+﻿@using System.Security.Cryptography;
+@using System.Text;
+@{
+    ViewBag.Title = "Мои заказы";
+    string get_hash(string name)
+    {
+        var tmpsrc = ASCIIEncoding.ASCII.GetBytes(name);
+        var tmphash = new MD5CryptoServiceProvider().ComputeHash(tmpsrc);
+        Int32 int_hash = Math.Abs(BitConverter.ToInt32(tmphash) % 23) + 1;
+        string name_hash = "(" + int_hash.ToString() + ").jpg";
+        return name_hash;
+    }
+}
+@model List<hackaton.Models.order>;
+
+<div class="row">
+    <div class="col-12">
+        <h3 class="pl-5">Мои задачи</h3>
+    </div>
+</div>
+<div class="row">
+    <div class="col-2">
+        <p>Фильтрация заказов</p>
+        <p style="margin-bottom:0">Стоимость</p>
+        <div class="row">
+            <div class="col-6">
+                <input class="form-control" style="margin-right:0.2rem; font-size:10px" type="text" placeholder="Начальная сумма" name="start_sum" id="start_sum" />
+            </div>
+            <div class="col-6">
+                <input class="form-control" style="margin-left: 0.2rem; font-size:10px" type="text" placeholder="Конечная сумма" name="end_sum" id="end_sum" />
+            </div>
+        </div>
+        <p style="margin-bottom:0">Статус заказа</p>
+        <select class="form-control" name="status" id="status_ord">
+            <option value="null">Не выбрано</option>
+            @for (int i = 0; i < ViewBag.Types; i++)
+            {
+                <option value="@ViewBag.Types[i]">@ViewBag.Types[i]</option>
+            }
+        </select>
+        <p style="margin-bottom:0">Дней до дедлайна</p>
+        <a href="#">менее 24 часов</a>
+        <a href="#">меньше 2 дней</a>
+        <a href="#">меньше 3 дней</a>
+        <a href="#">меньше 5 дней</a>
+        <a href="#">меньше 10 дней</a>
+        <a href="#">больше 10 дней</a>
+    </div>
+    <div class="col-10">
+        <div class="row">
+            @foreach (var order in Model)
+            {
+                <div class="col-4 m-2" style="border: 1px solid black; border-radius: 2px">
+                    <div class="p-1 w-100 d-flex flex-column align-items-start">
+                        <img style="border-radius:4px" class="bd-highlight" src="~/images/lazy/@get_hash(order.name)" width="100%" />
+                        <p style="margin-bottom:0px" class="bd-highlight">
+                            <a asp-controller="Orders" asp-action="GetOrderInfo" asp-route-id="@order.id_order">
+                                Название заказа: @order.name
+                            </a>
+                        </p>
+                        <p style="margin-bottom:0px" class="bd-highlight">Стоимость заказа: @order.cost рублей</p>
+                        @if (order.day_started == null)
+                        {
+                            <p style="margin-bottom:0px" class="bd-highlight">Начало выполнения: пока не начато</p>
+                        }
+                        else
+                        {
+                            <p style="margin-bottom:0px" class="bd-highlight">Начало выполнения: @order.day_started</p>
+                        }
+                        <p style="margin-bottom:0px" class="bd-highlight">Дней дедлайна: @order.due_date дней</p>
+                        <p style="margin-bottom:0px" class="bd-highlight">Статус: @order.orderStatus.name</p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

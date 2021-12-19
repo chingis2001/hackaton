@@ -1,0 +1,58 @@
+﻿@{
+    ViewBag.Title = "Создание заказа";
+}
+@model hackaton.Models.order
+<div class="row">
+    <div class="col-12">
+        <h3 class="pl-5">Создание заказа</h3>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12 d-flex justify-content-center">
+        <form method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label asp-for="name">Название заказа</label>
+                <input style="border: none; border-bottom: 1px solid black" type="text" asp-for="name" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="description">Описание заказа</label>
+                <textarea style="border: none; border-bottom: 1px solid black" asp-for="description" class="form-control" ></textarea>
+            </div>
+            <div class="form-group">
+                <label for="category">Категория заказа</label>
+                <select name="category" class="js-chosen">
+                    <option value="null">Не выбрано</option>
+                    @for (int i = 0; i < ViewBag.types.Count; i++) 
+                    {
+                        <option value="@ViewBag.types[i]">
+                            @ViewBag.types[i]
+                        </option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="cost">Стоимость заказа</label>
+                <input type="number" style="border: none; border-bottom: 1px solid black" asp-for="cost" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="due_date">Количество дней выполнения</label>
+                <input type="number" style="border: none; border-bottom: 1px solid black" asp-for="due_date" class="form-control" />
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-outline-success">Создать заказ</button>
+            </div>
+        </form>
+    </div>
+</div>
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            $('.js-chosen').chosen({
+                width: '100%',
+                no_results_text: 'Совпадений не найдено',
+                placeholder_text_single: 'Выберите тип'
+            });
+        });
+    </script>
+}
