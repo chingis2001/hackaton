@@ -37,7 +37,7 @@ namespace hackaton.Controllers
         public async Task<IActionResult> Login(string? username, string? password, bool rememberme) 
         {
             string resultname = username + password;
-            var пользователь = _context.user.FirstOrDefault(t => t.username == username);
+            var пользователь = _context.user.Include(t=>t.userStatus).FirstOrDefault(t => t.username == username);
             if (пользователь != null)
             {
                 var salt = Convert.FromBase64String(пользователь._salt);
@@ -55,7 +55,7 @@ namespace hackaton.Controllers
                 }
                 Guid IdUser = пользователь.user_id;
                 string UserName = пользователь.username;
-                await Authenticate(IdUser.ToString(), UserName);
+                await Authenticate(IdUser.ToString(), пользователь.userStatus.name);
                 if (rememberme)
                 {
                     var gh = HttpContext.User.Identity.Name;
@@ -76,7 +76,7 @@ namespace hackaton.Controllers
                 ViewBag.Error = "Wrong login";
                 return View();
             }
-            return RedirectToAction("/Home/Index");
+            return RedirectToAction("Index", "Home");
         }
         struct INN_resp 
         {
@@ -184,7 +184,7 @@ namespace hackaton.Controllers
                 if (!check) 
                 {
                     ModelState.AddModelError("", "ИНН не подходит введите другой");
-                    return RedirectToAction("/Home/Index");
+                    return RedirectToAction("Index", "Home");
                 }
             }
             var hashed_password = KeyDerivation.Pbkdf2(
@@ -203,7 +203,7 @@ namespace hackaton.Controllers
             _context.Add(user);
             if (!ModelState.IsValid) 
             {
-                return RedirectToAction("/Home/Index");
+                return RedirectToAction("Index", "Home");
             }
             user other_user = _context.user.SingleOrDefault(t => t.username == user.username);
             if (other_user == null) 
@@ -215,8 +215,6 @@ namespace hackaton.Controllers
         private async Task Authenticate(string userName, string rolename)
         {
             // создаем один claim
-            if (rolename != "admin")
-                rolename = "user";
             var claims = new List<Claim>
             {
                 new Claim(ClaimsIdentity.DefaultNameClaimType, userName),
@@ -235,6 +233,16 @@ namespace hackaton.Controllers
                 rng.GetBytes(salt);
             }
             return salt;
+        }
+        public async Task<IActionResult> Logout() 
+        {
+            var username = Guid.Parse(HttpContext.User.Identity.Name);
+            user пользователь = _context.user.FirstOrDefault(t => t.user_id == username);
+            пользователь._token = null;
+            _context.user.Update(пользователь);
+            _context.SaveChanges();
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Index", "Home");
         }
     }
 }

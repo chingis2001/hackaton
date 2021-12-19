@@ -387,3 +387,9 @@ C:\learning\hackaton\obj\Debug\net5.0\Razor\Views\Auth\_Login.cshtml.g.cs
 C:\learning\hackaton\obj\Debug\net5.0\Razor\Views\Orders\GetOrders.cshtml.g.cs
 C:\learning\hackaton\obj\Debug\net5.0\Razor\Views\Orders\Index.cshtml.g.cs
 C:\learning\hackaton\obj\Debug\net5.0\Razor\Views\Orders\GetCategories.cshtml.g.cs
+C:\learning\hackaton\obj\Debug\net5.0\Razor\Views\Orders\GetUserOrders.cshtml.g.cs
+C:\learning\hackaton\obj\Debug\net5.0\Razor\Views\Orders\CreateOrder.cshtml.g.cs
+C:\learning\hackaton\bin\Debug\net5.0\libman.json
+C:\learning\hackaton\obj\Debug\net5.0\Razor\Views\Orders\GetOrderInfo.cshtml.g.cs
+C:\learning\hackaton\obj\Debug\net5.0\Razor\Views\Orders\GetChallangers.cshtml.g.cs
+C:\learning\hackaton\obj\Debug\net5.0\Razor\Views\Orders\GetAcceptions.cshtml.g.cs

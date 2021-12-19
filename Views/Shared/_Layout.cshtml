@@ -6,13 +6,16 @@
     <title>@ViewData["Title"] - hackaton</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="/bootstrap-icons/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="/lib/chosen/chosen.min.css" />
+    <link rel="stylesheet" href="~/lib/jqueryui/jquery-ui.min.css" />
 </head>
 <body>
     <header>
         <div style="margin-bottom: 0px !important; padding-bottom: 0px; border-bottom: 1px solid #e5e5e5" class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
                 <a class="navbar-brand" style="width:110px; text-decoration: none" asp-area="" asp-controller="Home" asp-action="Index">
-                    <img src="~/images/logosm.png" style="width:110px" />
+                    <p style="font-size:20px; margin-bottom:0px; color:red">Хакатон</p>
                     <p style="font-size:9px; margin-bottom:0px">ФРИЛАНС МАРКЕТПЛЕЙС</p>
                 </a>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
@@ -126,7 +129,45 @@
                         </ul>
                     </div>
                 }
-            </div>  
+                else
+                {
+                    <div class="navbar-collapse d-sm-none justify-content-end">
+                        <ul class="navbar-nav flex-grow-0 d-flex align-items-center">
+                            <li style="margin-right:10px" class="nav-item">
+                                <p style="margin-bottom:0px">
+                                    Баланс: @ViewBag.Balance руб.
+                                </p>
+                            </li>
+                            <li style="margin-right:10px" class="nav-item">
+                                <a class="btn btn-primary" asp-controller="Orders" asp-action="GetUserOrders">
+                                    Мои задачи
+                                </a>
+                            </li>
+                            @if (User.IsInRole("Заказчик"))
+                            {
+                                <li style="margin-right:10px" class="nav-item">
+                                    <a asp-controller="Orders" asp-action="CreateOrder" class="btn btn-success">
+                                        Создать задачу
+                                    </a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li style="margin-right:10px" class="nav-item">
+                                    <a asp-controller="Orders" asp-action="GetAcceptions" class="btn btn-success">
+                                        Мои приглашения
+                                    </a>
+                                </li>
+                            }
+                            <li style="margin-right:10px" class="nav-item">
+                                <a class="btn btn-info" href="/Auth/Logout">
+                                    Выйти
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                }
+            </div>
         </div>
         <div style="border-bottom: 1px solid #e5e5e5" class="w-100 d-flex align-items-center justify-content-center">
             @foreach (var item in ViewBag.upper)
@@ -139,7 +180,7 @@
         </div>
     </header>
     <div class="container" style="margin-top:1rem;">
-        <main role="main" class="pb-3"">
+        <main role="main" class="pb-3" ">
             @RenderBody()
         </main>
     </div>
@@ -151,6 +192,8 @@
     </footer>
     <script src="/lib/jquery/dist/jquery.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jqueryui/jquery-ui.min.js"></script>
+    <script src="~/lib/chosen/chosen.jquery.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

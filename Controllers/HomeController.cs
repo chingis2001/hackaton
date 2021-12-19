@@ -24,6 +24,13 @@ namespace hackaton.Controllers
         {
             List<category> categories = _context.category.ToList();
             ViewBag.upper = categories.Where(t=>t.level==1).Select(t=>t.name);
+            if (User.Identity.Name != null)
+            {
+                Guid iid = Guid.Parse(User.Identity.Name);
+                user usr = _context.user.FirstOrDefault(t => t.user_id == iid);
+                ViewBag.Balance = usr.balance;
+
+            }
             return View(categories);
         }
 
